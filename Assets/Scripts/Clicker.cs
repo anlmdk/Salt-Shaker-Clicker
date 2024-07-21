@@ -7,6 +7,8 @@ public class Clicker : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
 
+    public ParticleSystem salt;
+
     public int score;
 
     private void Start()
@@ -17,6 +19,14 @@ public class Clicker : MonoBehaviour
     public void Score()
     {
         score++;
-        scoreText.text = score.ToString(); 
+        scoreText.text = score.ToString();
+
+        salt.Play();
+        StartCoroutine(SaltSecond());
+    }
+    private IEnumerator SaltSecond()
+    {
+        yield return new WaitForSeconds(0.5f);
+        salt.Stop();
     }
 }
