@@ -6,16 +6,35 @@ using UnityEngine.UI;
 
 public class XpBar : MonoBehaviour
 {
+    public static XpBar Instance { get; private set; }
+
     public Slider xpSlider;
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI xpBarText;
 
     public int currentXP = 0;
     private int maxXP = 100;
-    private int level = 1;
+    public int level = 1;
 
+
+    int xpGain;
     private int targetXP = 0; // Hedef XP
     private Coroutine xpCoroutine;
+
+    private bool isDoubleXpActive;
+    private float doubleXpEndTime = 0f;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -25,7 +44,14 @@ public class XpBar : MonoBehaviour
 
     public void CurrentXpBar()
     {
-        int xpGain = Random.Range(1, 5);
+        if (isDoubleXpActive && Time.time < doubleXpEndTime)
+        {
+            xpGain = Random.Range(5, 10);
+        }
+        else
+        {
+            xpGain = Random.Range(1, 5);
+        }
         targetXP += xpGain;
 
         // Seviye atlandýysa güncelle
@@ -42,6 +68,12 @@ public class XpBar : MonoBehaviour
         }
 
         xpCoroutine = StartCoroutine(AnimateXpBar());
+    }
+
+    public void ActiveDoubleXp()
+    {
+        xpGain = Random.Range(5, 15);
+        targetXP += xpGain;
     }
 
     private IEnumerator AnimateXpBar()
@@ -77,5 +109,18 @@ public class XpBar : MonoBehaviour
     {
         xpSlider.value = currentXP;
         UpdateXpBarText();
+    }
+
+    public void ActivateDoubleScore(float duration)
+    {
+        isDoubleXpActive = true;
+        doubleXpEndTime = Time.time + duration;
+        StartCoroutine(DeactivateDoubleScore(duration));
+    }
+
+    private IEnumerator DeactivateDoubleScore(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        isDoubleXpActive = false;
     }
 }
