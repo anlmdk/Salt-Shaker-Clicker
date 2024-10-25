@@ -1,2 +1,2 @@
 # Salt-Shaker-Clicker
- Basic Clicker Game
+ Basic clicker game.
