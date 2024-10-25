@@ -10,6 +10,7 @@ public class BannerModule : MonoBehaviour
     public CrazyBanner bannerPrefab;
     public Button continueButton; // Devam butonu referansý
     public TextMeshProUGUI buttonText; // Buton üzerindeki metin
+    private Coroutine countdownCoroutine;
 
     private void Start()
     {
@@ -40,9 +41,15 @@ public class BannerModule : MonoBehaviour
         {
             if (!banner.IsVisible()) continue;
             banner.gameObject.SetActive(false);
-            Clicker.Instance.ActivateDoubleScore(5f); // Skoru 5 saniye boyunca 2x yap
             return;
         }
+        // Butonu devre dýþý býrak ve geri sayýmý baþlat
+        continueButton.interactable = false;
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);
+        }
+        countdownCoroutine = StartCoroutine(ShowAdAndCountdown());
     }
 
     private IEnumerator ShowAdAndCountdown()

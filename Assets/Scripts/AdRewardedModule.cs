@@ -37,7 +37,7 @@ public class AdRewardedModule : MonoBehaviour
         },
         () =>
         {
-            XpBar.Instance.ActivateDoubleScore(5f);
+            XpBar.Instance.ActivateDoubleXp(5f);
         });
     }
 }

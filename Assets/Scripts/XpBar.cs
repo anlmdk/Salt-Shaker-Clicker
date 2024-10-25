@@ -17,8 +17,8 @@ public class XpBar : MonoBehaviour
     public int level = 1;
 
 
-    int xpGain;
-    private int targetXP = 0; // Hedef XP
+    public int xpGain;
+    public int targetXP = 0; // Hedef XP
     private Coroutine xpCoroutine;
 
     private bool isDoubleXpActive;
@@ -70,6 +70,46 @@ public class XpBar : MonoBehaviour
         xpCoroutine = StartCoroutine(AnimateXpBar());
     }
 
+    public void IncreaseXp(int scoreIncrease)
+    {
+        int xpIncrease = 0;
+
+        if (scoreIncrease >= 1000)
+        {
+            xpIncrease = Random.Range(20, 40);
+        }
+        else if (scoreIncrease >= 500)
+        {
+            xpIncrease = Random.Range(15, 30);
+        }
+        else if (scoreIncrease >= 100)
+        {
+            xpIncrease = Random.Range(10, 20);
+        }
+        else
+        {
+            xpIncrease = Random.Range(1, 5);
+        }
+
+        targetXP += xpIncrease;
+
+        // Seviye atlandýysa güncelle
+        if (targetXP >= maxXP)
+        {
+            level++;
+            targetXP -= maxXP; // Kalan XP'yi bir sonraki seviyeye aktar
+            currentXP = 0; // currentXP'yi sýfýrla
+        }
+
+        if (xpCoroutine != null)
+        {
+            StopCoroutine(xpCoroutine);
+        }
+
+        xpCoroutine = StartCoroutine(AnimateXpBar());
+    }
+
+
     public void ActiveDoubleXp()
     {
         xpGain = Random.Range(5, 15);
@@ -111,14 +151,14 @@ public class XpBar : MonoBehaviour
         UpdateXpBarText();
     }
 
-    public void ActivateDoubleScore(float duration)
+    public void ActivateDoubleXp(float duration)
     {
         isDoubleXpActive = true;
         doubleXpEndTime = Time.time + duration;
-        StartCoroutine(DeactivateDoubleScore(duration));
+        StartCoroutine(DeactivateDoubleXp(duration));
     }
 
-    private IEnumerator DeactivateDoubleScore(float duration)
+    private IEnumerator DeactivateDoubleXp(float duration)
     {
         yield return new WaitForSeconds(duration);
         isDoubleXpActive = false;

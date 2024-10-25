@@ -10,10 +10,10 @@ public class Clicker : MonoBehaviour
     public TextMeshProUGUI scoreText;
 
     public int score;
-    private bool isDoubleScoreActive = false;
-    private float doubleScoreEndTime = 0f;
+    private int scoreIncrement = 1;
 
     public ParticleSystem salt;
+    public AudioSource saltSFX;
 
     private void Awake()
     {
@@ -34,17 +34,11 @@ public class Clicker : MonoBehaviour
 
     public void Score()
     {
-        if (isDoubleScoreActive && Time.time < doubleScoreEndTime)
-        {
-            score += Random.Range(2,6); // Skoru 2x arttýr
-        }
-        else
-        {
-            score++;
-        }
+        score += scoreIncrement; // AutoClick için kullanýlan artýþ miktarý
 
-        scoreText.text = score.ToString();
+        UpdateScoreText();
         salt.Play();
+        saltSFX.Play();
         StartCoroutine(SaltSecond());
     }
     private IEnumerator SaltSecond()
@@ -53,16 +47,19 @@ public class Clicker : MonoBehaviour
         salt.Stop();
     }
 
-    public void ActivateDoubleScore(float duration)
+    private void UpdateScoreText()
     {
-        isDoubleScoreActive = true;
-        doubleScoreEndTime = Time.time + duration;
-        StartCoroutine(DeactivateDoubleScore(duration));
+        scoreText.text = score.ToString();
     }
 
-    private IEnumerator DeactivateDoubleScore(float duration)
+    public void SetScoreIncrement(int increment)
     {
-        yield return new WaitForSeconds(duration);
-        isDoubleScoreActive = false;
+        scoreIncrement = increment;
+    }
+
+    public void IncreaseScore(int amount)
+    {
+        score += amount;
+        UpdateScoreText();
     }
 }
