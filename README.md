@@ -1,2 +1,2 @@
 # Salt-Shaker-Clicker
- Created for Crazy Games
+ Basic Clicker Game
